@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient client;
     private Double latitud = null;
     private Double longitud = null;
+    private String search = "";
+    private boolean authorization = true;
 
 
     @Override
@@ -61,45 +63,55 @@ public class MainActivity extends AppCompatActivity {
         svMain = (SearchView) findViewById(R.id.sv_main);
         btnSearch = (Button) findViewById(R.id.btn_search);
         pgrbMain = (ProgressBar) findViewById(R.id.pgrb_main);
-
         client = LocationServices.getFusedLocationProviderClient(this);
-        setUpLocation();
+        upAuthorization();
 
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(authorization){
+                    upAuthorization();
+                    return;
+                }
+
+                btnSearch.setVisibility(View.GONE);
+                pgrbMain.setVisibility(View.VISIBLE);
+                search = svMain.getQuery().toString();
+                getCoordinates(client);
+            }
+        });
+    }
+
+    private void upAuthorization() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            authorization = true;
+            requestPermission();
+        } else {
+            authorization = false;
+        }
+    }
+
+    private void getCoordinates(FusedLocationProviderClient client) {
         client.getLastLocation().addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
                     latitud = location.getLatitude();
                     longitud = location.getLongitude();
-                    System.out.println(location.getLatitude());
-                    System.out.println(location.getLongitude());
-                }
-            }
-        });
-
-
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String search = svMain.getQuery().toString();
-
-                //Validate turn On/off GPS for get coordinates
-                if (latitud == null || longitud == null) {
+                    getInfoApi();
+                } else {
                     Toast.makeText(MainActivity.this, R.string.turnOnGPS, Toast.LENGTH_LONG).show();
+                    btnSearch.setVisibility(View.VISIBLE);
+                    pgrbMain.setVisibility(View.GONE);
                     return;
                 }
-
-                btnSearch.setVisibility(View.GONE);
-                pgrbMain.setVisibility(View.VISIBLE);
-
-                getInfoApi(search);
-
             }
         });
     }
 
-    private void getInfoApi(String search) {
+    private void getInfoApi() {
 
         GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
 
@@ -202,16 +214,8 @@ public class MainActivity extends AppCompatActivity {
         super.onPostResume();
     }
 
-    private void setUpLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermission();
-        }
-    }
-
     public void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 1);
-
     }
 
 }
