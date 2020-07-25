@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">CiviTets</string>
+    <string name="title_activity_tabs">TabsActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="thereIsNotResult">No hay resultado cerca a tu ubicación</string>
+    <string name="AppName">CiviTest</string>
+    <string name="turnOnGPS">Por favor encienda el GPS, para poder ubicar los lugares cercanos a su alrededor</string>
+    <string name="noNoticeAndPlaces">No hay Lugares o Noticias en esa busqueda</string>
+    <string name="serviceError">Hubo un error en la consulta, por favor vuelva a intentarlo</string>
+    <string name="titleTabs">Resultados</string>
+    <string name="searchXML">Buscar</string>
+    <string name="nameCardOffer">name</string>
+    <string name="infoCardOffer">info</string>
+    <string name="place">Lugar</string>
+    <string name="thereIsNoNew">No hay noticias que mostrar</string>
+    <string name="thereIsNoPlaces">No se encontro ningun lugar</string>
+</resources>
